@@ -6,8 +6,8 @@ public class InjectionBinder extends AbstractBinder {
     @Override
     protected void configure() {
         // @TODO Altere para a sua classe que implementa LifecycleManager
-        //bind(TweetLifecycleManager.class)
-        //        .to(LifecycleManager.class)
-        //        .in(Singleton.class);
+        bind(TweetLifecycleManager.class)
+                .to(LifecycleManager.class)
+                .in(Singleton.class);
     }
 }
