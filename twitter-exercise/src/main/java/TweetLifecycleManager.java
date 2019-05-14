@@ -3,10 +3,10 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TweetLifecycleManager implements LifecycleManager {
 
-    String _consumerKey = System.getenv().get("TWITTER_CONSUMER_KEY");
-    String _consumerSecret = System.getenv().get("TWITTER_CONSUMER_SECRET");
-    String _accessToken = System.getenv().get("TWITTER_ACCESS_TOKEN");
-    String _accessTokenSecret = System.getenv().get("TWITTER_ACCESS_TOKEN_SECRET");
+    static String _consumerKey = System.getenv().get("TWITTER_CONSUMER_KEY");
+    static String _consumerSecret = System.getenv().get("TWITTER_CONSUMER_SECRET");
+    static String _accessToken = System.getenv().get("TWITTER_ACCESS_TOKEN");
+    static String _accessTokenSecret = System.getenv().get("TWITTER_ACCESS_TOKEN_SECRET");
 
     public static TwitterStream getTwitterStreamInstance(){
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
@@ -41,9 +41,9 @@ public class TweetLifecycleManager implements LifecycleManager {
         }
     };
 
-
     public void start(){
-
+        TwitterStream twitterStream = getTwitterStreamInstance();
+        twitterStream.addListener(listener);
     }
 
     public void stop(){
