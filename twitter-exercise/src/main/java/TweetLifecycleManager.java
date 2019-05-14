@@ -40,13 +40,14 @@ public class TweetLifecycleManager implements LifecycleManager {
             e.printStackTrace();
         }
     };
+    TwitterStream twitterStream = getTwitterStreamInstance();
 
     public void start(){
-        TwitterStream twitterStream = getTwitterStreamInstance();
         twitterStream.addListener(listener);
+        twitterStream.filter("rio de janeiro", "Rio", "RJ", "rio");
     }
 
     public void stop(){
-
+        twitterStream.shutdown();
     }
 }
