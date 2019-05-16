@@ -7,7 +7,7 @@ O serviço é iniciado com:
 > curl http://localhost:8080/tweets/collector
 
 O serviço é finalizado com:
-> curl --request DELETE http://localhost:8090/tweets/collector
+> curl --request DELETE http://localhost:8080/tweets/collector
 
 A implementação do serviço REST já está implementada e você precisará apenas desenvolver as classes que gerenciam o
 ciclo de vida do serviço e o listener de coleta dos tweets.
@@ -78,3 +78,5 @@ Para executar o seu programa Java pela linha de comando:
 > java -cp target/twitter-exercise-1.0-SNAPSHOT-jar-with-dependencies.jar TweetCollectorApplication
 
 Não esquece de configurar as variáveis de ambiente antes de executar seu programa.
+
+Note: Use "-Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts" as an VM Option in case "java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty" appears.
