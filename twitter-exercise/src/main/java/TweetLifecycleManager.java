@@ -44,7 +44,8 @@ public class TweetLifecycleManager implements LifecycleManager {
 
     public void start(){
         twitterStream.addListener(listener);
-        twitterStream.filter("rio de janeiro", "Rio", "RJ", "rio");
+        // Filtro para selecionar tweets contendo apenas determinadas palavras
+        twitterStream.filter("rio de janeiro", " Rio", "RJ", " rio");
     }
 
     public void stop(){
