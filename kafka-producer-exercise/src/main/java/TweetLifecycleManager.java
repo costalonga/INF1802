@@ -14,6 +14,21 @@ public class TweetLifecycleManager implements LifecycleManager {
     static String _accessToken = System.getenv().get("TWITTER_ACCESS_TOKEN");
     static String _accessTokenSecret = System.getenv().get("TWITTER_ACCESS_TOKEN_SECRET");
 
+    static KafkaProducer<String,String> producer = getProducerInstance();
+
+    
+    public static KafkaProducer<String,String> getProducerInstance(){
+        // Criar as propriedades do produtor
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // Criar o produtor
+        KafkaProducer<String,String> producer = new KafkaProducer<String, String>(properties);
+        return producer;
+    }
+
     public static TwitterStream getTwitterStreamInstance(){
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 //        configurationBuilder.setDebugEnabled(true);
@@ -29,19 +44,6 @@ public class TweetLifecycleManager implements LifecycleManager {
         @Override
         public void onStatus(Status status) {
             Tweet tweet = new Tweet(status.getUser().getName(), status.getText(), status.getCreatedAt());
-//            System.out.println("User name: " + tweet.getUserName());
-//            System.out.println("Tweet date: " + tweet.getDate().toString());
-//            System.out.println("Text: " + tweet.getText() + "\n");
-
-
-            // Criar as propriedades do produtor
-            Properties properties = new Properties();
-            properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-            properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-            properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-
-            // Criar o produtor
-            KafkaProducer<String,String> producer = new KafkaProducer<String, String>(properties);
 
             String message = new String();
             message = "User name: " + tweet.getUserName() +
@@ -51,7 +53,6 @@ public class TweetLifecycleManager implements LifecycleManager {
             // Enviar as mensagens
             ProducerRecord<String, String> record = new ProducerRecord<String, String>("kafka_consumer_topic", message);
             producer.send(record); // Envio assíncrono
-            producer.close();
 
         }
 
@@ -68,14 +69,22 @@ public class TweetLifecycleManager implements LifecycleManager {
             e.printStackTrace();
         }
     };
+
     TwitterStream twitterStream = getTwitterStreamInstance();
 
+
     public void start(){
+        if (producer == null) {
+            producer = getProducerInstance();
+        }
         twitterStream.addListener(listener);
-        twitterStream.filter("rio de janeiro", "Rio", "RJ", "rio");
+        twitterStream.filter("basquete", "basketball", "NBA", "playoffs");
     }
 
     public void stop(){
+        // Close Producer
+        producer.close();
+        producer = null;
         twitterStream.shutdown();
     }
 }
